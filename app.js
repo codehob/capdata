@@ -105,7 +105,7 @@ function searchStockTwits() {
     };
 
     restclient.get("https://api.stocktwits.com/api/2/streams/symbol/AAPL.json?access_token=36e886819f5c4abe72e667096a417b9f2b3b4afe", function (data, response) {
-      //console.log('Stock Tweet Daata----------------------'+JSON.stringify(data));
+
 
       var stockTwitsString = JSON.stringify(data);
       var stockTwitsJsonObject = JSON.parse(stockTwitsString);
@@ -214,3 +214,5 @@ router.get("/contact", function (req, res) {
 http.createServer(app).listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'));
 });
+
+//    "start":"node app.js"
