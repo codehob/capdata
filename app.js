@@ -6,7 +6,6 @@ var logger = require('morgan');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var Firebase = require("firebase");
-var path = require('path');
 var fs = require('fs');
 var http = require('http');
 var moment = require('moment');
@@ -80,19 +79,34 @@ var token ='Usj4vkbHbJL9ohaUCCgc4uZMeHPBC8X9vv07uzcQ';
 //searchTweets();
 
 function searchTwitter(){
-  //1. twitter data
-  var stream = twitterConnection.stream('statuses/filter', { track: 'aapl' });
 
-  stream.on('tweet', function (tweet) {
-    var location = '/Twitter/'+tweet.id;
-    var tweetString = JSON.stringify(tweet);
-    var tweetObject = JSON.parse(tweetString);
-    capdataFirebaseRef.root().child(location).set(
+  try {
+    //1. twitter data
+    var stream = twitterConnection.stream('statuses/filter', {track: 'aapl'});
 
-        tweetObject
-    );
-    //console.log('Tweet Data------------------------' + JSON.stringify(tweet));
-  });
+    stream.on('tweet', function (tweet) {
+      var location = '/Twitter/' + tweet.id;
+      //console.log(tweet);
+      var tweetString = JSON.stringify(tweet);
+      var tweetObject = JSON.parse(tweetString);
+      capdataFirebaseRef.root().child(location).set(
+          tweetObject
+      );
+      //console.log('Tweet Data------------------------' + JSON.stringify(tweet));
+    });
+
+    stream.on('warning', function (warning) {
+      console.log(warning);
+    });
+
+    stream.on('error', function (error) {
+      console.log(error);
+    });
+  }
+  catch(exception){
+    console.log(exception);
+  }
+
 }
 function searchStockTwits() {
   try {
@@ -120,51 +134,21 @@ function searchStockTwits() {
 
     });
 
-    //twitterConnection.get('search/tweets', {
-    //      q: 'mbta_cr,MBTA_CR',
-    //      count: 100,
-    //      since_id: Last_Search_since_id,
-    //      result_type: 'recent',
-    //    },
-    //    function (err, data, response) {
-    //
-    //      if (data != null) {
-    //
-    //        var dataObject = JSON.parse(JSON.stringify(data));
-    //
-    //        if (dataObject.statuses != null) {
-    //
-    //          if (dataObject.statuses.length > 0) {
-    //            for (var i = 0; i < dataObject.statuses.length; i++) {
-    //
-    //              var tweet = dataObject.statuses[i].text.toString();
-    //              if (!dataObject.statuses[i].hasOwnProperty('retweeted_status')) {
-    //                //if(tweet.indexOf("RT") < 0) {
-    //                var currentDate = moment(new Date(dataObject.statuses[i].created_at)).format('MM/DD/YYYY HH:mm');
-    //                var timeStamp = moment(new Date(currentDate)).unix();
-    //                var id = dataObject.statuses[i].id.toString();
-    //                var tweetText = tweet;
-    //                var in_reply_to_status_id = "";
-    //                if (tweet.in_reply_to_status_id) {
-    //                  in_reply_to_status_id = tweet.in_reply_to_status_id;
-    //                }
-    //
-    //                var tweetedByUser = dataObject.statuses[i].user.screen_name.toLowerCase();
-    //
-    //
-    //                //console.log(tweet);
-    //                Last_Search_since_id = dataObject.statuses[0].id;
-    //              }
-    //              else {
-    //
-    //              }
-    //            }
-    //          }
-    //        }
-    //      }
-    //    }
-    //);
-    //getProfileTweets();
+
+    restclient.on('requestTimeout', function (req) {
+      console.log('request has expired');
+      restclient.abort();
+    });
+
+    restclient.on('responseTimeout', function (res) {
+      console.log('response has expired');
+
+    });
+
+//it's usefull to handle request errors to avoid, for example, socket hang up errors on request timeouts
+    restclient.on('error', function (err) {
+      console.log('request error', err);
+    });
   }
   catch
       (error) {
@@ -176,6 +160,7 @@ var router = express.Router();
 
 
 capdataFirebaseRef.authWithCustomToken(token, function (error, authData) {
+
   if (error) {
     console.log("Login Failed!", error);
   } else {

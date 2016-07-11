@@ -1,8 +1,8 @@
 var config = {};
 
-config.consumer_key = 'BwTwJoOGg7bRV7cIHlJfOhHMk';
-config.consumer_secret = 'GNyPLK1dTFk80n7BYE85evya1CFRDNIvKdG6HQDqLP0ibV8VDB';
-config.access_token = '2535372901-23bUGpitKb3WsS8fsxmtX8cEyOJiYzUwvJ1gtuO';
-config.access_token_secret = 'fuGKqC7cDaato4bTZHi5Cwv4xVGFGv6lVz4VZD7gyntrn';
+config.consumer_key = 'S9IZvo5shDEVoQzcVjep5BSAE';
+config.consumer_secret = 'cxnOo5g1V8jAFyf1XfG8JaW8NpcmQwlyIlQfOgzpAhXz9NIJ4q';
+config.access_token = '20609584-0TrXLP7ISC5JEQRE0SQcJI45G3PjtlQeL6FcCUJPr';
+config.access_token_secret = 'cXxgdKCJK7K243iAe2ngWbPlVlg6fads65mRSOnpziVfg';
 
 module.exports = config;
